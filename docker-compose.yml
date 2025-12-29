@@ -10,12 +10,13 @@ services:
       - NODE_ENV=production
       - DB_HOST=mysql
       - DB_PORT=3306
-      - DB_USERNAME=root
-      - DB_PASSWORD=root
+      - DB_USERNAME=thanhnt2930
+      - DB_PASSWORD=thanhnt2930
       - DB_NAME=class
       - PORT=3000
     depends_on:
-      - mysql
+      mysql:
+        condition: service_healthy
     networks:
       - app-network
 
@@ -32,6 +33,11 @@ services:
     volumes:
       - mysql_data:/var/lib/mysql
     command: --default-authentication-plugin=mysql_native_password
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-uroot", "-proot"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
     networks:
       - app-network
 
