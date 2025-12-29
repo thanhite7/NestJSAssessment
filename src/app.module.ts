@@ -12,6 +12,7 @@ import { GlobalExceptionFilter } from './filters/global-exception.filter';
     ConfigModule.forRoot({
       isGlobal: true,
       envFilePath: '.env',
+      ignoreEnvFile: true,
     }),
     TypeOrmModule.forRootAsync({
       imports: [ConfigModule],
