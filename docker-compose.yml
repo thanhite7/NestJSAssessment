@@ -1,30 +1,17 @@
 version: '3.9'
 
 services:
-  app:
-    build: .
+  teacher-api-nestjs:
     container_name: teacher-api-nestjs
-    ports:
-      - "3000:3000"
-    environment:
-      - NODE_ENV=production
-      - DB_HOST=mysql
-      - DB_PORT=3306
-      - DB_USERNAME=thanhnt2930
-      - DB_PASSWORD=thanhnt2930
-      - DB_NAME=class
-      - PORT=3000
+    build: .
+    expose:
+      - "3000"
     depends_on:
-      mysql:
-        condition: service_healthy
-    networks:
-      - app-network
+      - mysql-nestjs
 
-  mysql:
+  mysql-nestjs:
     image: mysql:8.0
     container_name: mysql-nestjs
-    ports:
-      - "3306:3306"
     environment:
       MYSQL_ROOT_PASSWORD: root
       MYSQL_DATABASE: class
@@ -32,18 +19,16 @@ services:
       MYSQL_PASSWORD: thanhnt2930
     volumes:
       - mysql_data:/var/lib/mysql
-    command: --default-authentication-plugin=mysql_native_password
-    healthcheck:
-      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-uroot", "-proot"]
-      interval: 5s
-      timeout: 5s
-      retries: 10
-    networks:
-      - app-network
+
+  nginx:
+    image: nginx:alpine
+    container_name: nginx
+    ports:
+      - "80:80"  
+    volumes:
+      - ./nginx/default.conf:/etc/nginx/conf.d/default.conf
+    depends_on:
+      - teacher-api-nestjs
 
 volumes:
   mysql_data:
-
-networks:
-  app-network:
-    driver: bridge
