@@ -178,20 +178,20 @@ Content-Type: application/json
 src/
 ├── modules/                    # Feature modules
 │   ├── teacher/               # Teacher module
-│   │   ├── controllers/       # Request handlers
-│   │   │   └── teacher.controller.ts
-│   │   ├── services/          # Business logic
-│   │   │   └── teacher.service.ts
-│   │   ├── dto/               # Data Transfer Objects
-│   │   │   ├── register-students.dto.ts
-│   │   │   ├── common-students.dto.ts
-│   │   │   ├── suspend-student.dto.ts
-│   │   │   └── notification.dto.ts
-│   │   └── teacher.module.ts  # Module definition
+│   │   ├── teacher.controller.ts    # Request handlers
+│   │   ├── teacher.service.ts       # Business logic
+│   │   ├── teacher.controller.spec.ts # Controller tests
+│   │   ├── teacher.service.spec.ts  # Service tests
+│   │   ├── teacher.module.ts        # Module definition
+│   │   └── dto/               # Data Transfer Objects
+│   │       ├── register-students.dto.ts
+│   │       ├── common-students.dto.ts
+│   │       ├── suspend-student.dto.ts
+│   │       └── notification.dto.ts
 │   ├── student/               # Student module
-│   │   ├── services/          # Student services
-│   │   │   └── student.service.ts
-│   │   └── student.module.ts  # Module definition
+│   │   ├── student.service.ts       # Student business logic
+│   │   ├── student.service.spec.ts  # Service tests
+│   │   └── student.module.ts        # Module definition
 │   └── shared/                # Shared utilities
 │       └── utils/             # Utility functions
 │           └── email.utils.ts
@@ -211,10 +211,6 @@ src/
 └── main.ts                    # Application entry point
 
 test/
-├── modules/                   # Module-specific tests
-│   └── teacher/
-│       ├── teacher.controller.spec.ts
-│       └── teacher.service.spec.ts
 ├── teacher.e2e-spec.ts        # E2E tests
 └── jest-e2e.json             # E2E Jest config
 ```
