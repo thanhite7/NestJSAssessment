@@ -1,26 +1,16 @@
 # Teacher Student Management API - NestJS
 
-A comprehensive Node.js REST API built with NestJS framework for managing teacher-student relationships with MySQL database.
-
-## 🚀 Features
-
-- **Register students to teachers** - Many-to-many relationship support
-- **Retrieve common students** - Find students registered to multiple teachers  
-- **Suspend students** - Administrative function to suspend student accounts
-- **Get notification recipients** - Smart notification system with @mention support
-- **Input validation** - Comprehensive validation using class-validator
-- **Error handling** - Global exception filter with meaningful error messages
-- **Unit & E2E tests** - Full test coverage with Jest
-- **Docker support** - Containerized deployment ready
+A comprehensive Node.js REST API built with NestJS framework for managing teacher-student relationships with MySQL database and Docker support.
 
 ## 🛠 Tech Stack
 
 - **Framework**: NestJS (TypeScript)
-- **Database**: MySQL with TypeORM
+- **Database**: MySQL 8.0 with TypeORM
 - **Validation**: class-validator, class-transformer
+- **Documentation**: Swagger/OpenAPI 3.0
 - **Testing**: Jest, Supertest
-- **Documentation**: Auto-generated with NestJS
 - **Containerization**: Docker & Docker Compose
+- **Architecture**: Modular design with feature modules
 
 ## 📋 Prerequisites
 
@@ -70,6 +60,11 @@ npm run build
 npm run start:prod
 ```
 
+The API will be available at:
+- **Base URL**: `http://localhost:3000/api/v1`
+- **Health Check**: `http://localhost:3000/api/v1/health`
+- **Swagger Docs**: `http://localhost:3000/api/v1/docs` (development only)
+
 ### Docker Deployment
 
 1. **Start with Docker Compose**
@@ -78,6 +73,11 @@ docker-compose up -d
 ```
 
 This will start both the API server and MySQL database.
+
+The services will be available at:
+- **API Server**: `http://localhost:3000/api/v1`
+- **Swagger Documentation**: `http://localhost:3000/api/v1/docs`
+- **MySQL Database**: `localhost:3306`
 
 ## 🧪 Testing
 
@@ -97,11 +97,13 @@ npm run test:watch
 
 ## 📡 API Endpoints
 
+Base URL: `http://localhost:3000/api/v1`
+
 ### 1. Register Students
 Register one or more students to a teacher.
 
 ```http
-POST /api/register
+POST /api/v1/register
 Content-Type: application/json
 
 {
@@ -119,7 +121,7 @@ Content-Type: application/json
 Retrieve students common to all specified teachers.
 
 ```http
-GET /api/commonstudents?teacher=teacherken%40gmail.com&teacher=teacherjoe%40gmail.com
+GET /api/v1/commonstudents?teacher=teacherken%40gmail.com&teacher=teacherjoe%40gmail.com
 ```
 
 **Response**:
@@ -136,7 +138,7 @@ GET /api/commonstudents?teacher=teacherken%40gmail.com&teacher=teacherjoe%40gmai
 Suspend a specified student.
 
 ```http
-POST /api/suspend
+POST /api/v1/suspend
 Content-Type: application/json
 
 {
@@ -150,7 +152,7 @@ Content-Type: application/json
 Retrieve students who can receive a notification.
 
 ```http
-POST /api/retrievefornotifications
+POST /api/v1/retrievefornotifications
 Content-Type: application/json
 
 {
@@ -174,28 +176,47 @@ Content-Type: application/json
 
 ```
 src/
-├── controllers/          # Request handlers
-│   └── teacher.controller.ts
-├── dto/                 # Data Transfer Objects
-│   ├── register-students.dto.ts
-│   ├── common-students.dto.ts
-│   ├── suspend-student.dto.ts
-│   └── notification.dto.ts
-├── entities/            # TypeORM entities
+├── modules/                    # Feature modules
+│   ├── teacher/               # Teacher module
+│   │   ├── controllers/       # Request handlers
+│   │   │   └── teacher.controller.ts
+│   │   ├── services/          # Business logic
+│   │   │   └── teacher.service.ts
+│   │   ├── dto/               # Data Transfer Objects
+│   │   │   ├── register-students.dto.ts
+│   │   │   ├── common-students.dto.ts
+│   │   │   ├── suspend-student.dto.ts
+│   │   │   └── notification.dto.ts
+│   │   └── teacher.module.ts  # Module definition
+│   ├── student/               # Student module
+│   │   ├── services/          # Student services
+│   │   │   └── student.service.ts
+│   │   └── student.module.ts  # Module definition
+│   └── shared/                # Shared utilities
+│       └── utils/             # Utility functions
+│           └── email.utils.ts
+├── entities/                  # TypeORM entities
 │   ├── teacher.entity.ts
 │   └── student.entity.ts
-├── filters/             # Exception filters
+├── shared/                    # Shared resources
+│   ├── constants/             # Application constants
+│   │   └── app.constants.ts
+│   └── interfaces/            # Common interfaces
+│       └── common.interfaces.ts
+├── controllers/               # Global controllers
+│   └── health.controller.ts   # Health check endpoint
+├── filters/                   # Exception filters
 │   └── global-exception.filter.ts
-├── modules/             # Feature modules
-│   └── teacher.module.ts
-├── services/            # Business logic
-│   └── teacher.service.ts
-├── app.module.ts        # Root module
-└── main.ts              # Application entry point
+├── app.module.ts              # Root module
+└── main.ts                    # Application entry point
 
 test/
-├── teacher.e2e-spec.ts  # E2E tests
-└── jest-e2e.json        # E2E Jest config
+├── modules/                   # Module-specific tests
+│   └── teacher/
+│       ├── teacher.controller.spec.ts
+│       └── teacher.service.spec.ts
+├── teacher.e2e-spec.ts        # E2E tests
+└── jest-e2e.json             # E2E Jest config
 ```
 
 ## 🗄 Database Schema
